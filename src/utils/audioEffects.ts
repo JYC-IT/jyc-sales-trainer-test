@@ -18,7 +18,12 @@ class SoundEffectsEngine {
       this.ctx = new AudioCtx();
     }
     if (this.ctx.state === 'suspended') {
-      this.ctx.resume().catch(() => {});
+      try {
+        const p = this.ctx.resume();
+        if (p && typeof p.catch === 'function') {
+          p.catch(() => {});
+        }
+      } catch {}
     }
     return this.ctx;
   }

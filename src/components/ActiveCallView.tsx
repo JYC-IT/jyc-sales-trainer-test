@@ -86,10 +86,12 @@ export default function ActiveCallView({
   const handleTogglePttMode = () => {
     const next = !isPttMode;
     setIsPttMode(next);
-    if (next) {
-      setMuted?.(true);
-    } else {
-      setMuted?.(false);
+    if (isConnected) {
+      if (next) {
+        setMuted?.(true);
+      } else {
+        setMuted?.(false);
+      }
     }
   };
 

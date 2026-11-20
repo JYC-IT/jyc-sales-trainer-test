@@ -365,7 +365,12 @@ const ElevenLabsCallView = ({
         ? `The prospect lost all interest (patience fell to ${interestScore}%) and hung up on you due to hesitations or lack of a clear offer!`
         : `¡El cliente perdió el interés (la paciencia cayó al ${interestScore}%) y te ha colgado por falta de claridad o vacilación!`;
       setConnectionError(hangupReason);
-      conversation.endSession().catch(() => {});
+      try {
+        const p = conversation.endSession?.();
+        if (p && typeof p.catch === 'function') {
+          p.catch(() => {});
+        }
+      } catch {}
       triggerEvaluation();
     }
   }, [isConnected, interestScore, difficulty, language]);
@@ -799,14 +804,18 @@ Devuelve estrictamente un JSON válido con este esquema:
         isMuted={conversation.isMuted}
         setMuted={(muted: boolean) => {
           try {
-            conversation.setMuted(muted);
+            if (isConnected && typeof conversation.setMuted === 'function') {
+              conversation.setMuted(muted);
+            }
           } catch (e) {
             console.error("Set mute error:", e);
           }
         }}
         onToggleMute={() => {
           try {
-            conversation.setMuted(!conversation.isMuted);
+            if (isConnected && typeof conversation.setMuted === 'function') {
+              conversation.setMuted(!conversation.isMuted);
+            }
           } catch (e) {
             console.error("Toggle mute error:", e);
           }
